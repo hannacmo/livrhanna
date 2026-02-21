@@ -1000,6 +1000,7 @@
     }).join('');
   }
 
+  window.openBookModal = id => { if (isAdmin) openBookModal(id); };
   window._editBook = id => { if (isAdmin) openBookModal(id); };
 
   // ── RESERVE ──
