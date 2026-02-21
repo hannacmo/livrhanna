@@ -7,21 +7,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:       #F4F0E4;
-    --teal:     #44A194;
-    --teal-dark:#358078;
-    --teal-pale:#d4efec;
-    --blue:     #537D96;
-    --blue-dark:#3f617a;
-    --blue-pale:#d6e5ef;
-    --pink:     #EC8F8D;
-    --pink-dark:#d4706e;
-    --pink-pale:#fce8e8;
-    --ink:      #2a2a2a;
-    --mid:      #6b6b6b;
-    --light:    #e8e4d8;
-    --white:    #ffffff;
-    --card-bg:  #faf8f3;
+    --bg:         #F4F0E4;
+    --teal:       #44A194;
+    --teal-dark:  #358078;
+    --teal-pale:  #d4efec;
+    --blue:       #537D96;
+    --blue-dark:  #3f617a;
+    --blue-pale:  #d6e5ef;
+    --pink:       #EC8F8D;
+    --pink-dark:  #d4706e;
+    --pink-pale:  #fce8e8;
+    --ink:        #2a2a2a;
+    --mid:        #6b6b6b;
+    --light:      #e8e4d8;
+    --white:      #ffffff;
+    --card-bg:    #faf8f3;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,235 +32,35 @@
     color: var(--ink);
     min-height: 100vh;
     font-size: 15px;
+    text-transform: lowercase;
   }
 
-  /* lowercase everything except book titles/authors */
-  body { text-transform: lowercase; }
   .book-title, .book-author,
-  .pub-title, .pub-author,
-  .modal-book-title, .modal-book-author { text-transform: none !important; }
+  .pub-title,  .pub-author,
+  .modal-book-title, .modal-book-author,
+  .res-name { text-transform: none !important; }
   input, textarea, select { text-transform: none; }
 
-  .page { display: none; }
-  .page.active { display: block; }
-
   /* ══════════════════════════════
-     ADMIN HEADER
+     HERO
   ══════════════════════════════ */
-  .admin-header {
+  .hero {
     background: var(--teal);
-    padding: 0 36px;
-    height: 62px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky; top: 0; z-index: 100;
-    gap: 12px;
+    padding: 48px 36px 36px;
+    text-align: center;
+    position: relative;
   }
 
   .logo {
     font-family: 'Playfair Display', serif;
-    font-size: 1.7rem;
-    color: var(--white);
-    font-style: italic;
-    letter-spacing: -0.01em;
+    font-size: 2.8rem; color: var(--white);
+    font-style: italic; letter-spacing: -0.01em;
+    margin-bottom: 10px; display: block;
     text-transform: lowercase;
   }
 
-  .header-stats { display: flex; gap: 22px; }
-
-  .stat { text-align: center; }
-  .stat-num   { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--white); display: block; line-height: 1; }
-  .stat-label { font-size: 0.62rem; color: rgba(255,255,255,.65); letter-spacing: .08em; margin-top: 2px; }
-
-  .btn-public {
-    padding: 7px 16px;
-    background: var(--white);
-    border: none; border-radius: 20px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: .78rem; font-weight: 700;
-    color: var(--teal);
-    cursor: pointer; transition: all .2s;
-    white-space: nowrap; text-transform: lowercase;
-  }
-
-  .btn-public:hover { background: var(--teal-pale); }
-
-  /* ══════════════════════════════
-     ADMIN CONTENT
-  ══════════════════════════════ */
-  .main-container { max-width: 1400px; margin: 0 auto; padding: 28px 36px; }
-
-  /* alerts */
-  .duplicates-alert {
-    background: var(--pink-pale); border: 1px solid var(--pink);
-    border-left: 4px solid var(--pink); border-radius: 6px;
-    padding: 12px 16px; margin-bottom: 20px; display: none;
-  }
-  .duplicates-alert h4 { font-size: .85rem; color: var(--pink-dark); margin-bottom: 4px; font-weight: 700; }
-  .dup-item { font-size: .8rem; padding: 2px 0; color: var(--ink); }
-
-  /* toolbar */
-  .toolbar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
-
-  .search-box { flex: 1; min-width: 200px; position: relative; }
-
-  .search-box input {
-    width: 100%; padding: 9px 14px 9px 34px;
-    border: 1.5px solid var(--light); border-radius: 20px;
-    background: var(--white); font-family: 'DM Sans', sans-serif;
-    font-size: .87rem; color: var(--ink); transition: border-color .2s;
-    text-transform: none;
-  }
-
-  .search-box input:focus { outline: none; border-color: var(--teal); }
-  .search-box::before { content: '🔍'; position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: .75rem; }
-
-  .filter-btn {
-    padding: 8px 14px; border: 1.5px solid var(--light); border-radius: 20px;
-    background: var(--white); font-family: 'DM Sans', sans-serif;
-    font-size: .76rem; font-weight: 500; color: var(--mid);
-    cursor: pointer; transition: all .2s; white-space: nowrap;
-  }
-
-  .filter-btn:hover { border-color: var(--teal); color: var(--teal); }
-  .filter-btn.active { background: var(--teal); border-color: var(--teal); color: var(--white); font-weight: 700; }
-  .filter-btn.dups.active   { background: var(--pink);  border-color: var(--pink); }
-  .filter-btn.donate.active { background: var(--teal);  border-color: var(--teal); }
-  .filter-btn.wish.active   { background: var(--blue);  border-color: var(--blue); }
-
-  .btn-add {
-    padding: 9px 18px; background: var(--teal); border: none; border-radius: 20px;
-    font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700;
-    color: var(--white); cursor: pointer; transition: all .2s; white-space: nowrap;
-  }
-
-  .btn-add:hover { background: var(--teal-dark); }
-
-  .sort-row {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 20px; padding-bottom: 14px;
-    border-bottom: 1px solid var(--light);
-    font-size: .78rem; color: var(--mid);
-  }
-
-  .sort-row select {
-    padding: 3px 8px; border: 1px solid var(--light); border-radius: 6px;
-    background: var(--white); font-family: 'DM Sans', sans-serif;
-    font-size: .82rem; color: var(--ink); cursor: pointer; text-transform: none;
-  }
-
-  /* ── ADMIN BOOK GRID ── */
-  .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
-
-  .book-card {
-    background: var(--card-bg);
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.06);
-    overflow: hidden; transition: transform .2s, box-shadow .2s;
-    border: 1.5px solid var(--light);
-    position: relative; animation: fadeIn .3s ease;
-    display: flex; flex-direction: column;
-  }
-
-  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-
-  .book-card:hover { transform: translateY(-4px); box-shadow: 0 8px 22px rgba(0,0,0,.1); }
-  .book-card.donate    { border-color: var(--teal);  }
-  .book-card.duplicate { border-color: var(--pink);  }
-  .book-card.wishlist  { border-color: var(--blue);  }
-  .book-card.reserved  { border-color: rgba(83,125,150,.4); opacity: .85; }
-
-  .book-badge {
-    position: absolute; top: 8px; right: 8px;
-    font-size: .58rem; padding: 3px 8px; border-radius: 10px; font-weight: 700;
-  }
-
-  .badge-donate    { background: var(--teal); color: white; }
-  .badge-duplicate { background: var(--pink); color: white; }
-  .badge-wishlist  { background: var(--blue); color: white; }
-  .badge-reserved  { background: var(--blue-pale); color: var(--blue-dark); }
-
-  /* cover area — image or emoji fallback */
-  .book-cover {
-    width: 100%; height: 150px; position: relative; overflow: hidden;
-    display: flex; align-items: center; justify-content: center; font-size: 3rem;
-    background: var(--light); flex-shrink: 0;
-  }
-
-  .book-cover img {
-    width: 100%; height: 100%; object-fit: cover;
-    position: absolute; inset: 0;
-  }
-
-  .book-cover .cover-emoji {
-    position: relative; z-index: 1;
-  }
-
-  .cover-upload-btn {
-    position: absolute; bottom: 6px; right: 6px; z-index: 2;
-    width: 26px; height: 26px; border-radius: 50%;
-    background: rgba(255,255,255,.9); border: none;
-    font-size: .75rem; cursor: pointer; display: flex;
-    align-items: center; justify-content: center;
-    box-shadow: 0 1px 4px rgba(0,0,0,.2); transition: all .2s;
-    opacity: 0;
-  }
-
-  .book-card:hover .cover-upload-btn { opacity: 1; }
-
-  .cover-input { display: none; }
-
-  .book-info  { padding: 11px 13px 4px; flex: 1; }
-  .book-title { font-family: 'Playfair Display', serif; font-size: .95rem; font-weight: 700; line-height: 1.3; margin-bottom: 2px; color: var(--ink); }
-  .book-author { font-size: .76rem; color: var(--mid); font-style: italic; margin-bottom: 7px; }
-  .book-meta  { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 6px; }
-
-  .tag {
-    font-size: .6rem; padding: 2px 7px; border-radius: 10px;
-    background: var(--light); color: var(--mid); font-weight: 500;
-  }
-
-  .book-rating { color: var(--pink); font-size: .78rem; margin-bottom: 4px; }
-
-  .reserved-note { font-size: .71rem; color: var(--blue); margin-bottom: 5px; font-weight: 500; }
-
-  .book-actions {
-    display: flex; gap: 4px; padding: 8px 13px 11px;
-  }
-
-  .action-btn {
-    flex: 1; padding: 5px 2px; border: 1.5px solid var(--light);
-    background: transparent; border-radius: 6px; font-size: .65rem;
-    cursor: pointer; color: var(--mid); text-align: center; transition: all .15s;
-  }
-
-  .action-btn:hover { background: var(--teal); color: white; border-color: var(--teal); }
-  .action-btn.danger:hover { background: var(--pink); border-color: var(--pink); }
-
-  /* ── EMPTY ── */
-  .empty-state { text-align: center; padding: 70px 20px; color: var(--mid); }
-  .empty-state .icon { font-size: 3.5rem; margin-bottom: 14px; }
-  .empty-state h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 7px; color: var(--ink); }
-  .empty-state p  { font-size: .87rem; }
-
-  /* ══════════════════════════════
-     PUBLIC PAGE
-  ══════════════════════════════ */
-  .public-hero {
-    background: var(--teal);
-    padding: 52px 40px 38px;
-    text-align: center;
-  }
-
-  .pub-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.8rem; color: var(--white); font-style: italic;
-    margin-bottom: 10px; text-transform: lowercase;
-  }
-
-  .public-hero p {
-    font-size: .97rem; color: rgba(255,255,255,.78);
+  .hero p {
+    font-size: .97rem; color: rgba(255,255,255,.75);
     max-width: 460px; margin: 0 auto 24px; line-height: 1.65;
   }
 
@@ -268,83 +68,153 @@
 
   .hero-search input {
     width: 100%; padding: 11px 18px 11px 40px;
-    border: 2px solid rgba(255,255,255,.25); border-radius: 24px;
-    background: rgba(255,255,255,.15); color: white;
+    border: 2px solid rgba(255,255,255,.22); border-radius: 24px;
+    background: rgba(255,255,255,.14); color: white;
     font-family: 'DM Sans', sans-serif; font-size: .93rem;
     transition: all .2s; text-transform: none;
   }
 
-  .hero-search input::placeholder { color: rgba(255,255,255,.5); }
+  .hero-search input::placeholder { color: rgba(255,255,255,.48); }
   .hero-search input:focus { outline: none; background: rgba(255,255,255,.22); border-color: rgba(255,255,255,.6); }
   .hero-search::before { content: '🔍'; position: absolute; left: 13px; top: 50%; transform: translateY(-50%); }
 
   .hero-stats { display: flex; justify-content: center; gap: 28px; margin-top: 18px; }
-  .hstat { font-size: .75rem; color: rgba(255,255,255,.7); }
-  .hstat strong { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--white); display: block; line-height: 1.1; }
+  .hstat { font-size: .75rem; color: rgba(255,255,255,.68); }
+  .hstat strong { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--white); display: block; line-height: 1.2; }
 
-  .back-btn {
-    display: inline-block; margin-top: 18px;
-    padding: 6px 18px; border: 1.5px solid rgba(255,255,255,.3);
-    border-radius: 20px; color: rgba(255,255,255,.8);
-    font-size: .77rem; cursor: pointer; background: transparent;
-    transition: all .2s; font-family: 'DM Sans', sans-serif;
+  /* admin mode toggle — hidden dot in hero */
+  .admin-toggle {
+    position: absolute; bottom: 12px; right: 16px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(255,255,255,.12); border: none;
+    cursor: pointer; transition: background .2s;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .7rem; color: rgba(255,255,255,.4);
+  }
+  .admin-toggle:hover { background: rgba(255,255,255,.22); color: rgba(255,255,255,.7); }
+
+  /* admin bar — shown when logged in */
+  .admin-bar {
+    display: none;
+    background: var(--ink);
+    padding: 10px 28px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
   }
 
-  .back-btn:hover { background: rgba(255,255,255,.15); color: white; }
+  .admin-bar.visible { display: flex; }
 
-  .public-container { max-width: 1100px; margin: 0 auto; padding: 32px 28px; }
+  .admin-bar span {
+    font-size: .78rem; color: rgba(255,255,255,.7);
+  }
 
-  .pub-section-label {
+  .admin-bar span strong { color: var(--teal); }
+
+  .admin-bar-actions { display: flex; gap: 8px; align-items: center; }
+
+  .btn-add-book {
+    padding: 7px 18px; background: var(--teal); border: none;
+    border-radius: 20px; font-family: 'DM Sans', sans-serif;
+    font-size: .8rem; font-weight: 700; color: white;
+    cursor: pointer; transition: background .2s;
+  }
+
+  .btn-add-book:hover { background: var(--teal-dark); }
+
+  .btn-logout {
+    padding: 6px 14px; background: transparent;
+    border: 1px solid rgba(255,255,255,.2); border-radius: 20px;
+    font-size: .75rem; color: rgba(255,255,255,.55);
+    cursor: pointer; transition: all .2s; font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-logout:hover { border-color: rgba(255,255,255,.5); color: white; }
+
+  /* ══════════════════════════════
+     BOOK GRID
+  ══════════════════════════════ */
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 28px; }
+
+  .section-label {
     font-size: .7rem; color: var(--mid); margin-bottom: 18px;
     display: flex; align-items: center; gap: 10px; letter-spacing: .1em;
   }
-  .pub-section-label::after { content:''; flex:1; height:1px; background:var(--light); }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--light); }
 
-  .public-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+  .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
 
-  .pub-card {
+  .book-card {
     background: var(--white); border-radius: 10px;
     box-shadow: 0 2px 12px rgba(0,0,0,.07);
     overflow: hidden; transition: transform .22s, box-shadow .22s;
-    animation: fadeIn .35s ease both;
+    animation: fadeUp .3s ease both;
     display: flex; flex-direction: column;
     border: 1.5px solid var(--light);
+    position: relative;
   }
 
-  .pub-card:hover { transform: translateY(-5px); box-shadow: 0 10px 26px rgba(0,0,0,.12); }
-  .pub-card.is-reserved { opacity: .75; }
-  .pub-card.is-reserved:hover { transform: none; box-shadow: 0 2px 12px rgba(0,0,0,.07); }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
-  .pub-cover {
-    width: 100%; height: 180px; position: relative; overflow: hidden;
+  .book-card:hover { transform: translateY(-5px); box-shadow: 0 10px 26px rgba(0,0,0,.12); }
+  .book-card.is-reserved { opacity: .72; }
+  .book-card.is-reserved:hover { transform: none; box-shadow: 0 2px 12px rgba(0,0,0,.07); }
+
+  /* admin actions overlay on card */
+  .card-admin-actions {
+    display: none;
+    position: absolute; top: 8px; right: 8px;
+    gap: 5px; z-index: 10;
+  }
+
+  .admin-mode .card-admin-actions { display: flex; }
+
+  .card-btn {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: none; cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    font-size: .75rem; transition: all .15s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  }
+
+  .card-btn.edit   { background: var(--white); color: var(--blue); }
+  .card-btn.delete { background: var(--white); color: var(--pink-dark); }
+  .card-btn.edit:hover   { background: var(--blue);     color: white; }
+  .card-btn.delete:hover { background: var(--pink-dark); color: white; }
+
+  /* cover */
+  .book-cover {
+    width: 100%; height: 170px; position: relative; overflow: hidden;
     display: flex; align-items: center; justify-content: center;
     font-size: 3.5rem; background: var(--light); flex-shrink: 0;
   }
 
-  .pub-cover img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-  .pub-cover .cover-emoji { position: relative; z-index: 1; }
+  .book-cover img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+  .cover-emoji { position:relative; z-index:1; }
 
   .reserved-overlay {
-    position: absolute; inset: 0; background: rgba(83,125,150,.35);
+    position: absolute; inset: 0; background: rgba(83,125,150,.38);
     display: flex; align-items: center; justify-content: center; z-index: 2;
   }
 
   .reserved-stamp {
     border: 2.5px solid white; color: white;
     font-family: 'Playfair Display', serif; font-size: .88rem; font-weight: 700;
-    padding: 4px 14px; letter-spacing: .1em;
-    transform: rotate(-12deg);
+    padding: 4px 14px; letter-spacing: .1em; transform: rotate(-12deg);
   }
 
-  .pub-body  { padding: 14px 15px 0; flex: 1; }
-  .pub-title { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; line-height: 1.35; margin-bottom: 3px; color: var(--ink); }
+  .book-body { padding: 14px 15px 0; flex: 1; }
+  .pub-title  { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; line-height: 1.35; margin-bottom: 3px; color: var(--ink); }
   .pub-author { font-size: .78rem; color: var(--mid); font-style: italic; margin-bottom: 9px; }
-  .pub-tags  { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 10px; }
+  .pub-tags   { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 10px; }
 
-  .pub-tag {
+  .tag {
     font-size: .6rem; padding: 2px 7px; border-radius: 10px;
     background: var(--light); color: var(--mid); font-weight: 500;
   }
+
+  .book-rating { color: var(--pink); font-size: .78rem; margin-bottom: 6px; }
 
   .reserved-by {
     display: flex; align-items: center; gap: 8px;
@@ -361,10 +231,9 @@
     font-size: .82rem; flex-shrink: 0; text-transform: uppercase;
   }
 
-  .res-name  { font-weight: 700; }
   .res-label { font-size: .67rem; color: var(--teal); display: block; opacity: .75; }
 
-  .pub-footer { padding: 0 15px 15px; margin-top: auto; padding-top: 4px; }
+  .book-footer { padding: 0 15px 15px; margin-top: auto; padding-top: 4px; }
 
   .btn-quero {
     width: 100%; padding: 10px; background: var(--teal); border: none;
@@ -383,6 +252,25 @@
 
   .btn-cancelar:hover { border-color: var(--pink); color: var(--pink-dark); }
 
+  /* book not for donation — shown in admin mode only */
+  .book-card.not-donate { border-color: var(--light); opacity: .6; }
+  .not-donate-label {
+    display: none;
+    width: 100%; padding: 8px 15px 12px;
+    font-size: .7rem; color: var(--mid); text-align: center; font-style: italic;
+  }
+
+  .admin-mode .book-card.not-donate { opacity: 1; }
+  .admin-mode .not-donate-label { display: block; }
+
+  /* ══════════════════════════════
+     EMPTY
+  ══════════════════════════════ */
+  .empty-state { text-align: center; padding: 70px 20px; color: var(--mid); }
+  .empty-state .icon { font-size: 3.5rem; margin-bottom: 14px; }
+  .empty-state h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 7px; color: var(--ink); }
+  .empty-state p { font-size: .87rem; }
+
   /* ══════════════════════════════
      MODALS
   ══════════════════════════════ */
@@ -397,7 +285,7 @@
 
   .modal {
     background: var(--bg); border-radius: 14px;
-    width: 100%; max-width: 500px; max-height: 92vh;
+    width: 100%; max-width: 480px; max-height: 92vh;
     overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,.18);
     animation: slideUp .26s cubic-bezier(.22,1,.36,1);
   }
@@ -421,14 +309,14 @@
   }
 
   .modal-book-icon {
-    font-size: 2rem; border-radius: 6px; padding: 6px 8px;
+    font-size: 2rem; border-radius: 6px;
     width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
     overflow: hidden; flex-shrink: 0;
   }
 
-  .modal-book-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
-  .modal-book-title  { font-family: 'Playfair Display', serif; font-size: .93rem; font-weight: 700; color: var(--ink); }
-  .modal-book-author { font-size: .76rem; color: var(--mid); font-style: italic; }
+  .modal-book-icon img { width:100%; height:100%; object-fit:cover; border-radius:4px; }
+  .modal-book-title  { font-family:'Playfair Display',serif; font-size:.93rem; font-weight:700; color:var(--ink); }
+  .modal-book-author { font-size:.76rem; color:var(--mid); font-style:italic; }
 
   .modal-body { padding: 18px 22px; }
 
@@ -451,24 +339,22 @@
 
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-  .checkbox-group { display: flex; gap: 12px; flex-wrap: wrap; }
+  .checkbox-group { display: flex; gap: 14px; flex-wrap: wrap; }
   .checkbox-label { display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: .8rem; color: var(--mid); }
 
-  /* cover upload in modal */
+  /* cover upload */
   .cover-upload-area {
     border: 2px dashed var(--light); border-radius: 8px;
-    padding: 16px; text-align: center; cursor: pointer;
-    transition: all .2s; position: relative; overflow: hidden;
+    padding: 14px; text-align: center; cursor: pointer;
+    transition: all .2s; position: relative; overflow: hidden; min-height: 70px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
   }
 
   .cover-upload-area:hover { border-color: var(--teal); background: var(--teal-pale); }
-  .cover-upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
-  .cover-upload-area .upload-icon { font-size: 1.8rem; margin-bottom: 4px; }
-  .cover-upload-area p { font-size: .77rem; color: var(--mid); }
-  .cover-upload-area .cover-preview {
-    width: 100%; height: 140px; object-fit: cover;
-    border-radius: 6px; display: block; margin-bottom: 6px;
-  }
+  .cover-upload-area input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+  .cover-upload-area .upload-icon { font-size: 1.6rem; }
+  .cover-upload-area p { font-size: .75rem; color: var(--mid); }
+  .cover-upload-area img.cover-preview { width:100%; max-height:130px; object-fit:cover; border-radius:6px; }
 
   .modal-footer { padding: 4px 22px 20px; }
 
@@ -479,8 +365,6 @@
   }
 
   .btn-save:hover { background: var(--teal-dark); }
-  .btn-save.pink  { background: var(--pink); }
-  .btn-save.pink:hover { background: var(--pink-dark); }
 
   .btn-cancel-sm {
     width: 100%; padding: 8px; margin-top: 7px;
@@ -491,10 +375,7 @@
 
   .btn-cancel-sm:hover { border-color: var(--mid); }
 
-  .privacy-note {
-    text-align: center; font-size: .7rem; color: var(--mid);
-    margin-top: 8px; font-style: italic;
-  }
+  .privacy-note { text-align: center; font-size: .7rem; color: var(--mid); margin-top: 8px; font-style: italic; }
 
   /* success */
   .success-body { padding: 28px 22px 24px; text-align: center; }
@@ -511,6 +392,24 @@
 
   .btn-fechar:hover { background: var(--teal-dark); }
 
+  /* password modal */
+  .pass-modal {
+    max-width: 360px; padding: 32px 28px; text-align: center;
+  }
+
+  .pass-modal h2 { font-family:'Playfair Display',serif; font-size:1.3rem; margin-bottom:6px; }
+  .pass-modal p  { font-size:.82rem; color:var(--mid); margin-bottom:20px; }
+
+  .pass-input-wrap { position: relative; margin-bottom: 14px; }
+  .pass-input-wrap input { font-size: 1rem; letter-spacing: .1em; text-align: center; padding-right: 40px; }
+  .pass-toggle {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; font-size: 1rem; color: var(--mid);
+  }
+
+  .pass-error { font-size: .78rem; color: var(--pink-dark); margin-bottom: 10px; display: none; }
+  .pass-error.visible { display: block; }
+
   /* ── TOAST ── */
   .toast {
     position: fixed; bottom: 24px; right: 24px;
@@ -524,101 +423,78 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 640px) {
-    .admin-header { padding: 0 16px; height: auto; padding-top: 12px; padding-bottom: 12px; flex-wrap: wrap; }
-    .main-container, .public-container { padding: 18px 14px; }
-    .public-hero { padding: 34px 18px 28px; }
-    .books-grid, .public-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .hero { padding: 36px 18px 30px; }
+    .container { padding: 20px 14px; }
+    .books-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
     .form-row { grid-template-columns: 1fr; }
-    .header-stats { gap: 14px; }
+    .hero-stats { gap: 20px; }
+    .admin-bar { padding: 10px 18px; }
   }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════ PAGE: ADMIN ═══════════════════════ -->
-<div class="page active" id="page-admin">
+<!-- ══════════════════════════════
+     HERO
+══════════════════════════════ -->
+<div class="hero">
+  <span class="logo">livrhanna</span>
+  <p>escolha um livro que queira levar para casa. clique em <strong style="color:white;">"eu quero!"</strong> e deixe seu nome para reservar.</p>
+  <div class="hero-search">
+    <input type="text" id="search" placeholder="buscar por título ou autor..." oninput="render()">
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><strong id="stat-available">0</strong>disponíveis</div>
+    <div class="hstat"><strong id="stat-reserved">0</strong>reservados</div>
+  </div>
+  <!-- botão secreto de admin — pequeno e discreto no canto -->
+  <button class="admin-toggle" onclick="openPasswordModal()" title="">⚙</button>
+</div>
 
-  <header class="admin-header">
-    <div class="logo">livrhanna</div>
-    <div class="header-stats">
-      <div class="stat"><span class="stat-num" id="stat-total">0</span><span class="stat-label">livros</span></div>
-      <div class="stat"><span class="stat-num" id="stat-dup">0</span><span class="stat-label">repetidos</span></div>
-      <div class="stat"><span class="stat-num" id="stat-donate">0</span><span class="stat-label">p/ doação</span></div>
-      <div class="stat"><span class="stat-num" id="stat-read">0</span><span class="stat-label">lidos</span></div>
-    </div>
-    <button class="btn-public" onclick="goPublic()">🔗 página de doação</button>
-  </header>
-
-  <div class="main-container">
-
-    <div class="duplicates-alert" id="dup-alert">
-      <h4>⚠️ livros repetidos encontrados</h4>
-      <div id="dup-list"></div>
-    </div>
-
-    <div class="toolbar">
-      <div class="search-box">
-        <input type="text" id="admin-search" placeholder="buscar por título, autor ou gênero...">
-      </div>
-      <button class="filter-btn active" onclick="setFilter('all', this)">todos</button>
-      <button class="filter-btn" onclick="setFilter('unread', this)">não lidos</button>
-      <button class="filter-btn dups" onclick="setFilter('duplicate', this)">repetidos</button>
-      <button class="filter-btn donate" onclick="setFilter('donate', this)">p/ doação</button>
-      <button class="filter-btn wish" onclick="setFilter('wishlist', this)">wishlist</button>
-      <button class="btn-add" onclick="openBookModal()">+ adicionar</button>
-    </div>
-
-    <div class="sort-row">
-      <span>ordenar por:</span>
-      <select id="sort-by" onchange="renderAdmin()">
-        <option value="title">título</option>
-        <option value="author">autor</option>
-        <option value="year">ano</option>
-        <option value="rating">avaliação</option>
-        <option value="added">data de adição</option>
-      </select>
-      <span id="count-label" style="margin-left:auto;"></span>
-    </div>
-
-    <div class="books-grid" id="books-grid"></div>
-    <div class="empty-state" id="admin-empty" style="display:none;">
-      <div class="icon">📖</div>
-      <h3>nenhum livro aqui</h3>
-      <p>adicione seus primeiros livros ou ajuste os filtros.</p>
-    </div>
-
+<!-- ══════════════════════════════
+     ADMIN BAR (visível só quando logada)
+══════════════════════════════ -->
+<div class="admin-bar" id="admin-bar">
+  <span>✏️ modo admin <strong>ativado</strong> — somente você está vendo isso</span>
+  <div class="admin-bar-actions">
+    <button class="btn-add-book" onclick="openBookModal()">+ adicionar livro</button>
+    <button class="btn-logout" onclick="logout()">sair</button>
   </div>
 </div>
 
-<!-- ═══════════════════════ PAGE: PUBLIC ═══════════════════════ -->
-<div class="page" id="page-public">
-
-  <div class="public-hero">
-    <div class="pub-logo">livrhanna</div>
-    <p>escolha um livro que queira levar para casa. clique em <strong style="color:white;">"eu quero!"</strong> e deixe seu nome para reservar.</p>
-    <div class="hero-search">
-      <input type="text" id="pub-search" placeholder="buscar por título ou autor..." oninput="renderPublic()">
-    </div>
-    <div class="hero-stats">
-      <div class="hstat"><strong id="pub-stat-available">0</strong>disponíveis</div>
-      <div class="hstat"><strong id="pub-stat-reserved">0</strong>reservados</div>
-    </div>
-    <button class="back-btn" onclick="goAdmin()">← minha estante</button>
+<!-- ══════════════════════════════
+     BOOK GRID
+══════════════════════════════ -->
+<div class="container">
+  <div class="section-label" id="section-label">livros disponíveis</div>
+  <div class="books-grid" id="books-grid"></div>
+  <div class="empty-state" id="empty-state" style="display:none;">
+    <div class="icon">🌿</div>
+    <h3>nenhum livro encontrado</h3>
+    <p>tente buscar por outro título ou autor.</p>
   </div>
-
-  <div class="public-container">
-    <div class="pub-section-label" id="pub-section-label">livros disponíveis</div>
-    <div class="public-grid" id="public-grid"></div>
-    <div class="empty-state" id="pub-empty" style="display:none;">
-      <div class="icon">🌿</div>
-      <h3>nenhum livro disponível</h3>
-      <p>ainda não há livros para doação marcados na estante.</p>
-    </div>
-  </div>
-
 </div>
 
-<!-- ═══════════════════════ MODAL — ADD/EDIT BOOK ═══════════════════════ -->
+<!-- ══════════════════════════════
+     MODAL — SENHA
+══════════════════════════════ -->
+<div class="modal-overlay" id="pass-modal-overlay">
+  <div class="modal pass-modal">
+    <h2>🔐 área restrita</h2>
+    <p>digite a senha para entrar no modo admin</p>
+    <div class="pass-input-wrap">
+      <input type="password" id="pass-input" placeholder="••••••••" onkeydown="if(event.key==='Enter') checkPassword()">
+      <button class="pass-toggle" onclick="togglePassVis()" id="pass-eye">👁</button>
+    </div>
+    <p class="pass-error" id="pass-error">senha incorreta. tente novamente.</p>
+    <button class="btn-save" onclick="checkPassword()">entrar</button>
+    <button class="btn-cancel-sm" onclick="closePasswordModal()">cancelar</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     MODAL — ADICIONAR / EDITAR LIVRO
+══════════════════════════════ -->
 <div class="modal-overlay" id="book-modal">
   <div class="modal">
     <div class="modal-header">
@@ -626,19 +502,16 @@
       <button class="modal-close" onclick="closeBookModal()">✕</button>
     </div>
     <div class="modal-body">
-
-      <!-- cover upload -->
       <div class="form-group">
         <label>foto da capa</label>
         <div class="cover-upload-area" id="cover-upload-area">
           <input type="file" accept="image/*" id="cover-file-input" onchange="handleCoverUpload(event)">
           <div id="cover-upload-content">
             <div class="upload-icon">📷</div>
-            <p>clique para adicionar uma foto da capa</p>
+            <p>clique para adicionar uma foto</p>
           </div>
         </div>
       </div>
-
       <div class="form-group"><label>título *</label><input type="text" id="f-title" placeholder="ex: dom casmurro"></div>
       <div class="form-group"><label>autor *</label><input type="text" id="f-author" placeholder="ex: machado de assis"></div>
       <div class="form-row">
@@ -654,11 +527,7 @@
             <option>HQ / Graphic Novel</option><option>Outro</option>
           </select>
         </div>
-        <div class="form-group"><label>ano</label><input type="number" id="f-year" placeholder="ex: 1899" min="1000" max="2100"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>editora</label><input type="text" id="f-publisher" placeholder="ex: cia das letras"></div>
-        <div class="form-group"><label>isbn</label><input type="text" id="f-isbn" placeholder="ex: 978-..."></div>
+        <div class="form-group"><label>ano</label><input type="number" id="f-year" placeholder="ex: 1999" min="1000" max="2100"></div>
       </div>
       <div class="form-group">
         <label>avaliação</label>
@@ -669,14 +538,14 @@
           <option value="5">⭐⭐⭐⭐⭐</option>
         </select>
       </div>
-      <div class="form-group"><label>observações</label><textarea id="f-notes" rows="2" placeholder="estado do livro, onde comprou..."></textarea></div>
+      <div class="form-group"><label>observações</label><textarea id="f-notes" rows="2" placeholder="estado do livro, edição especial..."></textarea></div>
       <div class="form-group">
         <label>marcadores</label>
         <div class="checkbox-group">
-          <label class="checkbox-label"><input type="checkbox" id="f-read"> ✅ lido</label>
           <label class="checkbox-label"><input type="checkbox" id="f-donate"> 💚 para doação</label>
-          <label class="checkbox-label"><input type="checkbox" id="f-wishlist"> 🔵 wishlist</label>
+          <label class="checkbox-label"><input type="checkbox" id="f-read"> ✅ lido</label>
           <label class="checkbox-label"><input type="checkbox" id="f-duplicate"> 🔴 repetido</label>
+          <label class="checkbox-label"><input type="checkbox" id="f-wishlist"> 🔵 wishlist</label>
         </div>
       </div>
     </div>
@@ -687,7 +556,9 @@
   </div>
 </div>
 
-<!-- ═══════════════════════ MODAL — RESERVE ═══════════════════════ -->
+<!-- ══════════════════════════════
+     MODAL — RESERVAR
+══════════════════════════════ -->
 <div class="modal-overlay" id="reserve-modal">
   <div class="modal" id="reserve-modal-inner"></div>
 </div>
@@ -695,21 +566,33 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // 🔑  MUDE A SENHA AQUI
+  const ADMIN_PASSWORD = 'livrhanna2025';
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
   /* ─── STATE ─── */
   let books        = [];
   let reservations = {};
-  let currentFilter = 'all';
-  let editingId     = null;
-  let reservingId   = null;
-  let pendingCover  = null; // base64 of cover being uploaded in modal
+  let isAdmin      = false;
+  let editingId    = null;
+  let reservingId  = null;
+  let pendingCover = null;
+
+  const BG_COLORS = ['#d4efec','#d6e5ef','#fce8e8','#e4d4ef','#d4e8d4','#f0e8d4','#e8d4d4'];
+  const EMOJIS    = {'Romance':'💕','Ficção Científica':'🚀','Fantasia':'🧙','Terror':'👻',
+    'Mistério':'🕵️','Thriller':'🔪','Não-ficção':'📊','Biografia':'👤','História':'🏛️',
+    'Filosofia':'🤔','Autoajuda':'💪','Clássico':'🏆','Literatura Brasileira':'🌿',
+    'Infantil':'🌈','HQ / Graphic Novel':'🦸'};
 
   /* ─── STORAGE ─── */
-  function load() {
+  function loadData() {
     try { books        = JSON.parse(localStorage.getItem('livrhanna_books')  || '[]'); } catch(e) { books = []; }
     try { reservations = JSON.parse(localStorage.getItem('livrhanna_reservas')|| '{}'); } catch(e) { reservations = {}; }
+    if (books.length === 0) seedSamples();
   }
 
-  function save() {
+  function saveData() {
     localStorage.setItem('livrhanna_books',   JSON.stringify(books));
     localStorage.setItem('livrhanna_reservas', JSON.stringify(reservations));
   }
@@ -717,26 +600,10 @@
   function genId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
 
   /* ─── HELPERS ─── */
-  const EMOJIS = {'Romance':'💕','Ficção Científica':'🚀','Fantasia':'🧙','Terror':'👻',
-    'Mistério':'🕵️','Thriller':'🔪','Não-ficção':'📊','Biografia':'👤','História':'🏛️',
-    'Filosofia':'🤔','Autoajuda':'💪','Clássico':'🏆','Literatura Brasileira':'🌿',
-    'Infantil':'🌈','HQ / Graphic Novel':'🦸'};
-
-  const BG_COLORS = ['#d4efec','#d6e5ef','#fce8e8','#e4d4ef','#d4e8d4','#f0e8d4','#e8d4d4'];
-
-  function bookEmoji(g) { return EMOJIS[g] || '📖'; }
-
-  function bookBg(t) {
-    return BG_COLORS[Math.abs((t||'').split('').reduce((s,c)=>s+c.charCodeAt(0),0)) % BG_COLORS.length];
-  }
-
-  function initials(name) {
-    return (name||'').trim().split(' ').filter(Boolean).slice(0,2).map(p=>p[0].toUpperCase()).join('');
-  }
-
-  function esc(s) {
-    return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+  function bookEmoji(g)  { return EMOJIS[g] || '📖'; }
+  function bookBg(title) { return BG_COLORS[Math.abs((title||'').split('').reduce((s,c)=>s+c.charCodeAt(0),0)) % BG_COLORS.length]; }
+  function initials(n)   { return (n||'').trim().split(' ').filter(Boolean).slice(0,2).map(p=>p[0].toUpperCase()).join(''); }
+  function esc(s)        { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   function showToast(msg) {
     const t = document.getElementById('toast');
@@ -744,74 +611,77 @@
     setTimeout(() => t.classList.remove('show'), 2800);
   }
 
-  /* ─── PAGE SWITCHING ─── */
-  function showPage(id) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-' + id).classList.add('active');
+  /* ─── ADMIN AUTH ─── */
+  function openPasswordModal() {
+    if (isAdmin) { logout(); return; }
+    document.getElementById('pass-input').value = '';
+    document.getElementById('pass-error').classList.remove('visible');
+    document.getElementById('pass-modal-overlay').classList.add('show');
+    setTimeout(() => document.getElementById('pass-input').focus(), 120);
   }
 
-  function goPublic() { showPage('public'); renderPublic(); }
-  function goAdmin()  { showPage('admin');  renderAdmin(); }
-
-  /* ─── COVER UPLOAD ─── */
-  function handleCoverUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      pendingCover = ev.target.result;
-      const area = document.getElementById('cover-upload-content');
-      if (area) {
-        area.innerHTML = `<img class="cover-preview" src="${pendingCover}" alt="capa"><p style="font-size:.72rem;color:var(--teal);">✓ foto carregada — clique para trocar</p>`;
-      }
-    };
-    reader.readAsDataURL(file);
+  function closePasswordModal() {
+    document.getElementById('pass-modal-overlay').classList.remove('show');
   }
 
-  // Called from inline "change cover" button on card
-  function triggerCoverChange(bookId) {
-    const inp = document.getElementById('cover-inp-' + bookId);
-    if (inp) inp.click();
+  function checkPassword() {
+    const val = document.getElementById('pass-input').value;
+    if (val === ADMIN_PASSWORD) {
+      isAdmin = true;
+      closePasswordModal();
+      document.getElementById('admin-bar').classList.add('visible');
+      document.body.classList.add('admin-mode');
+      render();
+      showToast('modo admin ativado! 🔓');
+    } else {
+      document.getElementById('pass-error').classList.add('visible');
+      document.getElementById('pass-input').value = '';
+      document.getElementById('pass-input').focus();
+      document.getElementById('pass-input').animate(
+        [{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],
+        {duration:240}
+      );
+    }
   }
 
-  function handleInlineCoverChange(bookId, e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      const b = books.find(b => b.id === bookId);
-      if (b) { b.cover = ev.target.result; save(); renderAdmin(); showToast('foto da capa atualizada!'); }
-    };
-    reader.readAsDataURL(file);
+  function logout() {
+    isAdmin = false;
+    document.getElementById('admin-bar').classList.remove('visible');
+    document.body.classList.remove('admin-mode');
+    render();
+    showToast('saiu do modo admin.');
+  }
+
+  function togglePassVis() {
+    const inp = document.getElementById('pass-input');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
   }
 
   /* ─── BOOK MODAL ─── */
   function openBookModal(id) {
+    if (!isAdmin) return;
     editingId    = id || null;
     pendingCover = null;
     const b = id ? books.find(b=>b.id===id) : null;
 
     document.getElementById('book-modal-title').textContent = b ? 'editar livro' : 'novo livro';
-    document.getElementById('f-title').value     = b ? b.title : '';
-    document.getElementById('f-author').value    = b ? b.author : '';
-    document.getElementById('f-genre').value     = b ? (b.genre||'') : '';
-    document.getElementById('f-year').value      = b ? (b.year||'') : '';
-    document.getElementById('f-publisher').value = b ? (b.publisher||'') : '';
-    document.getElementById('f-isbn').value      = b ? (b.isbn||'') : '';
-    document.getElementById('f-rating').value    = b ? (b.rating||0) : 0;
-    document.getElementById('f-notes').value     = b ? (b.notes||'') : '';
+    document.getElementById('f-title').value     = b ? b.title      : '';
+    document.getElementById('f-author').value    = b ? b.author     : '';
+    document.getElementById('f-genre').value     = b ? (b.genre||'')    : '';
+    document.getElementById('f-year').value      = b ? (b.year||'')     : '';
+    document.getElementById('f-rating').value    = b ? (b.rating||0)    : 0;
+    document.getElementById('f-notes').value     = b ? (b.notes||'')    : '';
+    document.getElementById('f-donate').checked    = b ? !!b.donate    : true;
     document.getElementById('f-read').checked      = b ? !!b.read      : false;
-    document.getElementById('f-donate').checked    = b ? !!b.donate    : false;
-    document.getElementById('f-wishlist').checked  = b ? !!b.wishlist  : false;
     document.getElementById('f-duplicate').checked = b ? !!b.duplicate : false;
+    document.getElementById('f-wishlist').checked  = b ? !!b.wishlist  : false;
 
-    // restore cover preview if editing
     const area = document.getElementById('cover-upload-content');
     if (b && b.cover) {
       pendingCover = b.cover;
-      area.innerHTML = `<img class="cover-preview" src="${b.cover}" alt="capa"><p style="font-size:.72rem;color:var(--teal);">✓ foto atual — clique para trocar</p>`;
+      area.innerHTML = `<img class="cover-preview" src="${b.cover}" alt="capa"><p style="font-size:.72rem;color:var(--teal);margin-top:4px;">✓ foto atual — clique para trocar</p>`;
     } else {
-      area.innerHTML = `<div class="upload-icon">📷</div><p>clique para adicionar uma foto da capa</p>`;
+      area.innerHTML = `<div class="upload-icon">📷</div><p>clique para adicionar uma foto</p>`;
     }
 
     document.getElementById('book-modal').classList.add('show');
@@ -823,11 +693,23 @@
     editingId = pendingCover = null;
   }
 
+  function handleCoverUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      pendingCover = ev.target.result;
+      const area = document.getElementById('cover-upload-content');
+      area.innerHTML = `<img class="cover-preview" src="${pendingCover}" alt="capa"><p style="font-size:.72rem;color:var(--teal);margin-top:4px;">✓ foto carregada — clique para trocar</p>`;
+    };
+    reader.readAsDataURL(file);
+  }
+
   function saveBook() {
     const title  = document.getElementById('f-title').value.trim();
     const author = document.getElementById('f-author').value.trim();
-    if (!title)  { showToast('preencha o título!'); return; }
-    if (!author) { showToast('preencha o autor!');  return; }
+    if (!title)  { showToast('preencha o título!');  return; }
+    if (!author) { showToast('preencha o autor!'); return; }
 
     const existing = editingId ? books.find(b=>b.id===editingId) : null;
     const book = {
@@ -835,201 +717,125 @@
       title, author,
       genre:     document.getElementById('f-genre').value,
       year:      document.getElementById('f-year').value,
-      publisher: document.getElementById('f-publisher').value.trim(),
-      isbn:      document.getElementById('f-isbn').value.trim(),
       rating:    parseInt(document.getElementById('f-rating').value),
       notes:     document.getElementById('f-notes').value.trim(),
-      read:      document.getElementById('f-read').checked,
       donate:    document.getElementById('f-donate').checked,
-      wishlist:  document.getElementById('f-wishlist').checked,
+      read:      document.getElementById('f-read').checked,
       duplicate: document.getElementById('f-duplicate').checked,
+      wishlist:  document.getElementById('f-wishlist').checked,
       cover:     pendingCover !== null ? pendingCover : (existing ? existing.cover : null),
       added:     existing ? existing.added : Date.now()
     };
 
     if (editingId) {
       books[books.findIndex(b=>b.id===editingId)] = book;
-      showToast('livro atualizado!');
+      showToast('livro atualizado! ✓');
     } else {
       books.push(book);
-      showToast('livro adicionado à estante!');
+      showToast('livro adicionado! ✓');
     }
 
-    save(); closeBookModal(); renderAdmin(); updateStats();
+    saveData(); closeBookModal(); render();
   }
 
   function deleteBook(id) {
-    if (!confirm('remover este livro da estante?')) return;
-    books = books.filter(b => b.id !== id);
-    delete reservations[id];
-    save(); renderAdmin(); updateStats(); showToast('livro removido.');
-  }
-
-  function toggleFlag(id, flag) {
     const b = books.find(b=>b.id===id);
     if (!b) return;
-    b[flag] = !b[flag];
-    if (flag === 'donate' && !b.donate) delete reservations[id];
-    save(); renderAdmin(); updateStats();
+    if (!confirm(`remover "${b.title}" da estante?`)) return;
+    books = books.filter(b=>b.id!==id);
+    delete reservations[id];
+    saveData(); render();
+    showToast('livro removido.');
   }
 
-  function setFilter(filter, btn) {
-    currentFilter = filter;
-    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    renderAdmin();
-  }
+  /* ─── RENDER ─── */
+  function render() {
+    const q = (document.getElementById('search').value||'').toLowerCase();
 
-  function detectDuplicates() {
-    const map = {};
-    books.forEach(b => {
-      const k = (b.title||'').toLowerCase().trim();
-      if (!map[k]) map[k] = [];
-      map[k].push(b);
+    // in public mode, show only donate books; in admin, show all
+    const list = books.filter(b => {
+      const matchSearch = !q || b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q);
+      const matchMode   = isAdmin ? true : b.donate;
+      return matchSearch && matchMode;
     });
-    const dups = Object.values(map).filter(g=>g.length>1);
-    const el   = document.getElementById('dup-alert');
-    if (dups.length > 0) {
-      document.getElementById('dup-list').innerHTML = dups.map(g =>
-        `<div class="dup-item">📕 <strong>${esc(g[0].title)}</strong> — ${g.length} cópias</div>`
-      ).join('');
-      el.style.display = 'block';
-    } else { el.style.display = 'none'; }
-  }
 
-  function getFiltered() {
-    const q = document.getElementById('admin-search').value.toLowerCase();
-    const s = document.getElementById('sort-by').value;
-    let list = books.filter(b => {
-      const ms = !q || b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q) || (b.genre||'').toLowerCase().includes(q);
-      const mf = currentFilter==='all'       ? true
-               : currentFilter==='unread'    ? !b.read
-               : currentFilter==='duplicate' ? b.duplicate
-               : currentFilter==='donate'    ? b.donate
-               : currentFilter==='wishlist'  ? b.wishlist : true;
-      return ms && mf;
-    });
-    list.sort((a,b) => {
-      if (s==='title')  return a.title.localeCompare(b.title);
-      if (s==='author') return a.author.localeCompare(b.author);
-      if (s==='year')   return (b.year||0)-(a.year||0);
-      if (s==='rating') return (b.rating||0)-(a.rating||0);
-      if (s==='added')  return (b.added||0)-(a.added||0);
-      return 0;
-    });
-    return list;
-  }
+    const donateBooks = books.filter(b => b.donate);
+    document.getElementById('stat-available').textContent = donateBooks.filter(b=>!reservations[b.id]).length;
+    document.getElementById('stat-reserved').textContent  = donateBooks.filter(b=> reservations[b.id]).length;
 
-  function coverHTML(b, height='150px') {
-    const bg = bookBg(b.title);
-    if (b.cover) {
-      return `<img src="${esc(b.cover)}" alt="${esc(b.title)}" style="width:100%;height:${height};object-fit:cover;display:block;">`;
-    }
-    return `<div style="width:100%;height:${height};background:${bg};display:flex;align-items:center;justify-content:center;font-size:2.8rem;">${bookEmoji(b.genre)}</div>`;
-  }
-
-  function renderAdmin() {
-    const list  = getFiltered();
     const grid  = document.getElementById('books-grid');
-    const empty = document.getElementById('admin-empty');
-    document.getElementById('count-label').textContent = `${list.length} livro${list.length!==1?'s':''}`;
+    const empty = document.getElementById('empty-state');
+    const label = document.getElementById('section-label');
 
-    if (list.length===0) { grid.innerHTML=''; empty.style.display='block'; return; }
-    empty.style.display='none';
+    const visibleCount = list.length;
+    label.textContent = q
+      ? `resultados para "${q}"`
+      : isAdmin
+        ? `${books.length} livro${books.length!==1?'s':''} no catálogo`
+        : `${donateBooks.length} livro${donateBooks.length!==1?'s':''} disponíveis`;
 
-    grid.innerHTML = list.map(b => {
-      const stars = b.rating ? '⭐'.repeat(b.rating) : '';
-      const res   = reservations[b.id];
+    if (visibleCount === 0) { grid.innerHTML=''; empty.style.display='block'; return; }
+    empty.style.display = 'none';
 
-      let badge = '';
-      if (b.duplicate) badge = '<span class="book-badge badge-duplicate">repetido</span>';
-      else if (b.donate) badge = res ? '<span class="book-badge badge-reserved">reservado</span>' : '<span class="book-badge badge-donate">doação</span>';
-      else if (b.wishlist) badge = '<span class="book-badge badge-wishlist">wishlist</span>';
+    grid.innerHTML = list.map((b, i) => {
+      const res    = reservations[b.id];
+      const bg     = bookBg(b.title);
+      const stars  = b.rating ? '⭐'.repeat(b.rating) : '';
+      const isDonate = b.donate;
 
-      const cls = b.duplicate ? 'duplicate' : b.donate ? (res?'reserved':'donate') : b.wishlist ? 'wishlist' : '';
-      const bg  = bookBg(b.title);
+      const coverHTML = b.cover
+        ? `<img src="${esc(b.cover)}" alt="${esc(b.title)}">`
+        : `<span class="cover-emoji">${bookEmoji(b.genre)}</span>`;
 
-      return `
-        <div class="book-card ${cls}">
-          ${badge}
-          <div class="book-cover" style="background:${bg}">
-            ${b.cover ? `<img src="${esc(b.cover)}" alt="${esc(b.title)}">` : `<span class="cover-emoji">${bookEmoji(b.genre)}</span>`}
-            <button class="cover-upload-btn" onclick="triggerCoverChange('${b.id}')" title="trocar foto">📷</button>
-            <input type="file" accept="image/*" class="cover-input" id="cover-inp-${b.id}" onchange="handleInlineCoverChange('${b.id}', event)">
+      const reservedHTML = res ? `
+        <div class="reserved-overlay">
+          <div class="reserved-stamp">reservado</div>
+        </div>` : '';
+
+      const reservedByHTML = res ? `
+        <div class="reserved-by">
+          <div class="avatar">${initials(res.name)}</div>
+          <div>
+            <span class="res-label">reservado por</span>
+            <span class="res-name">${esc(res.name)}</span>
           </div>
-          <div class="book-info">
-            <div class="book-title">${esc(b.title)}</div>
-            <div class="book-author">${esc(b.author)}</div>
-            <div class="book-meta">
-              ${b.genre?`<span class="tag">${esc(b.genre)}</span>`:''}
-              ${b.year?`<span class="tag">${b.year}</span>`:''}
-              ${b.read?'<span class="tag" style="background:var(--teal-pale);color:var(--teal-dark);">✓ lido</span>':''}
-            </div>
-            ${stars?`<div class="book-rating">${stars}</div>`:''}
-            ${res?`<div class="reserved-note">👤 reservado por <strong style="text-transform:none">${esc(res.name)}</strong></div>`:''}
-          </div>
-          <div class="book-actions">
-            <button class="action-btn" onclick="openBookModal('${b.id}')" title="editar">✏️</button>
-            <button class="action-btn" onclick="toggleFlag('${b.id}','read')">${b.read?'📖':'📕'}</button>
-            <button class="action-btn" onclick="toggleFlag('${b.id}','donate')" title="doação">💚</button>
-            <button class="action-btn" onclick="toggleFlag('${b.id}','duplicate')" title="repetido">🔴</button>
-            <button class="action-btn danger" onclick="deleteBook('${b.id}')" title="remover">🗑️</button>
-          </div>
+        </div>` : '';
+
+      const footerHTML = !isDonate
+        ? `<div class="not-donate-label">não está na lista de doação</div>`
+        : !res
+          ? `<div class="book-footer"><button class="btn-quero" onclick="openReserveModal('${b.id}')">💚 eu quero!</button></div>`
+          : `<div class="book-footer"><button class="btn-cancelar" onclick="cancelarReserva('${b.id}')">cancelar reserva</button></div>`;
+
+      const adminActions = `
+        <div class="card-admin-actions">
+          <button class="card-btn edit"   onclick="openBookModal('${b.id}')" title="editar">✏️</button>
+          <button class="card-btn delete" onclick="deleteBook('${b.id}')"    title="remover">🗑️</button>
         </div>`;
-    }).join('');
-  }
 
-  function updateStats() {
-    document.getElementById('stat-total').textContent  = books.length;
-    document.getElementById('stat-dup').textContent    = books.filter(b=>b.duplicate).length;
-    document.getElementById('stat-donate').textContent = books.filter(b=>b.donate).length;
-    document.getElementById('stat-read').textContent   = books.filter(b=>b.read).length;
-    detectDuplicates();
-  }
+      const cardClass = !isDonate ? 'not-donate' : res ? 'is-reserved' : '';
 
-  /* ─── PUBLIC ─── */
-  function renderPublic() {
-    const q    = (document.getElementById('pub-search').value||'').toLowerCase();
-    const list = books.filter(b => b.donate && (!q || b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q)));
-
-    document.getElementById('pub-stat-available').textContent = books.filter(b=>b.donate&&!reservations[b.id]).length;
-    document.getElementById('pub-stat-reserved').textContent  = books.filter(b=>b.donate&&reservations[b.id]).length;
-
-    const grid  = document.getElementById('public-grid');
-    const empty = document.getElementById('pub-empty');
-    const label = document.getElementById('pub-section-label');
-    label.textContent = q ? `resultados para "${q}"` : `${list.length} livro${list.length!==1?'s':''}`;
-
-    if (list.length===0) { grid.innerHTML=''; empty.style.display='block'; return; }
-    empty.style.display='none';
-
-    grid.innerHTML = list.map(b => {
-      const res = reservations[b.id];
-      const bg  = bookBg(b.title);
       return `
-        <div class="pub-card${res?' is-reserved':''}">
-          <div class="pub-cover" style="background:${bg}">
-            ${b.cover ? `<img src="${esc(b.cover)}" alt="${esc(b.title)}">` : `<span class="cover-emoji">${bookEmoji(b.genre)}</span>`}
-            ${res?`<div class="reserved-overlay"><div class="reserved-stamp">reservado</div></div>`:''}
+        <div class="book-card ${cardClass}" style="animation-delay:${Math.min(i*0.04,0.3)}s">
+          ${adminActions}
+          <div class="book-cover" style="background:${bg}">
+            ${coverHTML}
+            ${reservedHTML}
           </div>
-          <div class="pub-body">
+          <div class="book-body">
             <div class="pub-title">${esc(b.title)}</div>
             <div class="pub-author">${esc(b.author)}</div>
             <div class="pub-tags">
-              ${b.genre?`<span class="pub-tag">${esc(b.genre)}</span>`:''}
-              ${b.year?`<span class="pub-tag">${b.year}</span>`:''}
+              ${b.genre?`<span class="tag">${esc(b.genre)}</span>`:''}
+              ${b.year?`<span class="tag">${b.year}</span>`:''}
+              ${isAdmin&&b.read?'<span class="tag" style="background:var(--teal-pale);color:var(--teal-dark);">✓ lido</span>':''}
+              ${isAdmin&&b.duplicate?'<span class="tag" style="background:var(--pink-pale);color:var(--pink-dark);">repetido</span>':''}
+              ${isAdmin&&b.wishlist?'<span class="tag" style="background:var(--blue-pale);color:var(--blue-dark);">wishlist</span>':''}
             </div>
-            ${res?`
-              <div class="reserved-by">
-                <div class="avatar">${initials(res.name)}</div>
-                <div><span class="res-label">reservado por</span><span class="res-name">${esc(res.name)}</span></div>
-              </div>`:''}
+            ${stars?`<div class="book-rating">${stars}</div>`:''}
+            ${reservedByHTML}
           </div>
-          <div class="pub-footer">
-            ${!res
-              ? `<button class="btn-quero" onclick="openReserveModal('${b.id}')">💚 eu quero!</button>`
-              : `<button class="btn-cancelar" onclick="cancelarReserva('${b.id}')">cancelar reserva</button>`}
-          </div>
+          ${footerHTML}
         </div>`;
     }).join('');
   }
@@ -1053,7 +859,7 @@
         <button class="modal-close" onclick="closeReserveModal()">✕</button>
       </div>
       <div class="modal-book-preview">
-        ${iconHTML}
+        <div class="modal-book-icon">${iconHTML}</div>
         <div>
           <div class="modal-book-title">${esc(b.title)}</div>
           <div class="modal-book-author">${esc(b.author)}</div>
@@ -1063,7 +869,7 @@
         <div class="form-row">
           <div class="form-group">
             <label>nome *</label>
-            <input type="text" id="r-nome" placeholder="João" autocomplete="given-name">
+            <input type="text" id="r-nome" placeholder="Maria" autocomplete="given-name">
           </div>
           <div class="form-group">
             <label>sobrenome *</label>
@@ -1097,18 +903,17 @@
     const b        = books.find(b=>b.id===reservingId);
 
     reservations[reservingId] = { name: fullName, at: new Date().toLocaleDateString('pt-BR') };
-    save();
+    saveData();
 
     document.getElementById('reserve-modal-inner').innerHTML = `
       <div class="success-body">
         <div class="success-icon">💚</div>
         <h3>reservado!</h3>
         <p><strong>${esc(b.title)}</strong> está reservado para <strong style="text-transform:none">${esc(fullName)}</strong>.<br><br>entre em contato para combinar a retirada!</p>
-        <button class="btn-fechar" onclick="closeReserveModal();renderPublic();">fechar</button>
+        <button class="btn-fechar" onclick="closeReserveModal();render();">fechar</button>
       </div>
     `;
-
-    renderPublic(); updateStats(); renderAdmin();
+    render();
   }
 
   function cancelarReserva(bookId) {
@@ -1116,45 +921,48 @@
     if (!res) return;
     if (!confirm(`cancelar a reserva de ${res.name}?`)) return;
     delete reservations[bookId];
-    save(); renderPublic(); updateStats(); renderAdmin();
+    saveData(); render();
     showToast('reserva cancelada.');
   }
 
-  function shake(inputId) {
-    const el = document.getElementById(inputId);
+  function shake(id) {
+    const el = document.getElementById(id);
     el.style.borderColor = 'var(--pink)';
-    el.animate([{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:220});
+    el.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:220});
     el.focus();
     setTimeout(() => el.style.borderColor='', 1200);
   }
 
-  /* ─── EVENTS ─── */
-  document.getElementById('admin-search').addEventListener('input', renderAdmin);
-  document.getElementById('book-modal').addEventListener('click', e => { if(e.target===document.getElementById('book-modal')) closeBookModal(); });
-  document.getElementById('reserve-modal').addEventListener('click', e => { if(e.target===document.getElementById('reserve-modal')) closeReserveModal(); });
-  document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeBookModal(); closeReserveModal(); } });
-
   /* ─── SEED ─── */
-  function seed() {
-    if (books.length > 0) return;
+  function seedSamples() {
     const s = [
-      { title:'Dom Casmurro',       author:'Machado de Assis',     genre:'Clássico',         year:'1899', rating:5, read:true },
-      { title:'O Senhor dos Anéis', author:'J.R.R. Tolkien',       genre:'Fantasia',          year:'1954', rating:5, read:true },
-      { title:'1984',               author:'George Orwell',         genre:'Ficção Científica', year:'1949', rating:5, read:false },
-      { title:'O Alquimista',       author:'Paulo Coelho',          genre:'Romance',           year:'1988', rating:3, read:true, donate:true },
-      { title:'Dom Casmurro',       author:'Machado de Assis',      genre:'Clássico',          year:'1899', read:false, duplicate:true, donate:true, notes:'Cópia extra' },
-      { title:'Sapiens',            author:'Yuval Noah Harari',     genre:'Não-ficção',        year:'2011', rating:4, read:true },
-      { title:'A Menina que Roubava Livros', author:'Markus Zusak', genre:'Romance',           year:'2005', rating:5, read:true, donate:true },
+      { title:'O Alquimista',       author:'Paulo Coelho',          genre:'Romance',           year:'1988', rating:3, read:true,  donate:true,  duplicate:false, wishlist:false, notes:'', cover:null },
+      { title:'Sapiens',            author:'Yuval Noah Harari',     genre:'Não-ficção',        year:'2011', rating:4, read:true,  donate:true,  duplicate:false, wishlist:false, notes:'', cover:null },
+      { title:'A Menina que Roubava Livros', author:'Markus Zusak', genre:'Romance',           year:'2005', rating:5, read:true,  donate:true,  duplicate:false, wishlist:false, notes:'', cover:null },
+      { title:'Dom Casmurro',       author:'Machado de Assis',      genre:'Clássico',          year:'1899', rating:5, read:true,  donate:false, duplicate:false, wishlist:false, notes:'', cover:null },
+      { title:'1984',               author:'George Orwell',         genre:'Ficção Científica', year:'1949', rating:5, read:false, donate:false, duplicate:false, wishlist:true,  notes:'', cover:null },
     ];
-    s.forEach(b => books.push({ id:genId(), added:Date.now(), cover:null, ...b }));
-    save();
+    s.forEach(b => books.push({ id:genId(), added:Date.now(), ...b }));
+    saveData();
   }
 
+  /* ─── EVENTS ─── */
+  document.getElementById('pass-modal-overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('pass-modal-overlay')) closePasswordModal();
+  });
+  document.getElementById('book-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('book-modal')) closeBookModal();
+  });
+  document.getElementById('reserve-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('reserve-modal')) closeReserveModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closePasswordModal(); closeBookModal(); closeReserveModal(); }
+  });
+
   /* ─── INIT ─── */
-  load();
-  seed();
-  updateStats();
-  renderAdmin();
+  loadData();
+  render();
 </script>
 </body>
 </html>
