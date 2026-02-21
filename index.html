@@ -121,6 +121,14 @@
   }
   .btn-add:hover { background: var(--teal-dark); }
 
+  .btn-restricted {
+    padding: 9px 18px; background: transparent;
+    border: 1.5px solid var(--light); border-radius: 20px;
+    font-family: 'DM Sans', sans-serif; font-size: .78rem;
+    font-weight: 500; color: var(--mid); cursor: pointer; transition: all .2s;
+  }
+  .btn-restricted:hover { border-color: var(--teal); color: var(--teal); }
+
   /* ══════════ BOOK GRID — vertical book proportions ══════════ */
   .books-grid {
     display: grid;
@@ -366,7 +374,9 @@
     <button class="filter-chip" data-filter="donate" onclick="setFilter('donate',this)">💚 para doação</button>
     <button class="filter-chip" data-filter="read" onclick="setFilter('read',this)">✅ lidos</button>
     <button class="filter-chip" data-filter="wishlist" onclick="setFilter('wishlist',this)">🔵 wishlist</button>
-    <button class="filter-chip" data-filter="5stars" onclick="setFilter('5stars',this)">⭐⭐⭐⭐⭐</button>
+    <select class="filter-select" id="filter-rating" onchange="setFilter('rating',this)">
+      <option value="">por avaliação...</option>
+    </select>
     <select class="filter-select" id="filter-author" onchange="setFilter('author',this)">
       <option value="">por autor...</option>
     </select>
@@ -392,7 +402,8 @@
 <div class="container">
   <div class="toolbar">
     <div class="section-label" id="section-label">carregando...</div>
-    <button class="btn-add" onclick="clickAdd()">＋ adicionar livro</button>
+    <button class="btn-add" id="btn-add-book" onclick="openBookModal()" style="display:none;">＋ adicionar livro</button>
+    <button class="btn-restricted" onclick="clickAdd()" id="btn-restricted">🔐 área restrita</button>
   </div>
   <div id="config-warning-area"></div>
   <div class="books-grid" id="books-grid"></div>
@@ -532,7 +543,7 @@
   // ━━━━━━━━━━━━━━━━━━━━━━━━
 
   // 🔑 mude a senha aqui
-  const SENHA = 'v0lp4t45';
+  const SENHA = 'V0lp4t45';
 
   const CONFIGURED = firebaseConfig.apiKey !== "COLE_AQUI";
 
@@ -543,9 +554,10 @@
   let editingId    = null;
   let reservingId  = null;
   let pendingCover = null;
-  let activeFilter = 'all';
+  let activeFilter    = 'all';
   let activeAuthor    = '';
   let activePublisher = '';
+  let activeRating    = 0;
 
   const BG = ['#d4efec','#d6e5ef','#fce8e8','#e4d4ef','#d4e8d4','#f0e8d4','#e8d4d4'];
   const EM = {
@@ -647,6 +659,14 @@
     aSelect.classList.toggle('active', !!aSelect.value);
     pSelect.classList.toggle('active', !!pSelect.value);
 
+    // rating dropdown
+    const ratings = [...new Set(books.map(b=>b.rating).filter(r=>r>0))].sort((a,b)=>b-a);
+    const rSelect = document.getElementById('filter-rating');
+    const rVal = parseInt(rSelect.value)||0;
+    rSelect.innerHTML = '<option value="">por avaliação...</option>' +
+      ratings.map(r => `<option value="${r}"${r===rVal?' selected':''}>${'⭐'.repeat(r)}</option>`).join('');
+    rSelect.classList.toggle('active', !!rSelect.value);
+
     // update datalists for form
     const authDL = document.getElementById('authors-list');
     const pubDL  = document.getElementById('publishers-list');
@@ -656,7 +676,8 @@
 
   // ── AUTH ──
   window.clickAdd = () => {
-    if (isAdmin) { openBookModal(); return; }
+    // already admin — nothing to do (button hidden anyway)
+    if (isAdmin) return;
     document.getElementById('pass-input').value = '';
     document.getElementById('pass-error').textContent = '';
     document.getElementById('pass-modal').classList.add('show');
@@ -672,8 +693,9 @@
       window.closePassModal();
       document.getElementById('admin-bar').classList.add('on');
       document.body.classList.add('admin-unlocked');
+      document.getElementById('btn-add-book').style.display = 'inline-block';
+      document.getElementById('btn-restricted').style.display = 'none';
       render();
-      openBookModal();
     } else {
       document.getElementById('pass-error').textContent = 'senha incorreta, tente novamente.';
       document.getElementById('pass-input').value = '';
@@ -687,6 +709,8 @@
     isAdmin = false;
     document.getElementById('admin-bar').classList.remove('on');
     document.body.classList.remove('admin-unlocked');
+    document.getElementById('btn-add-book').style.display = 'none';
+    document.getElementById('btn-restricted').style.display = 'inline-block';
     render();
     showToast('saiu do modo admin.');
   };
@@ -822,8 +846,11 @@
     if (type === 'author') {
       activeAuthor    = el.value;
       activePublisher = '';
+      activeRating    = 0;
       document.getElementById('filter-publisher').value = '';
+      document.getElementById('filter-rating').value = '';
       document.getElementById('filter-publisher').classList.remove('active');
+      document.getElementById('filter-rating').classList.remove('active');
       el.classList.toggle('active', !!el.value);
       // deactivate chips
       document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
@@ -831,19 +858,36 @@
     } else if (type === 'publisher') {
       activePublisher = el.value;
       activeAuthor    = '';
+      activeRating    = 0;
       document.getElementById('filter-author').value = '';
+      document.getElementById('filter-rating').value = '';
       document.getElementById('filter-author').classList.remove('active');
+      document.getElementById('filter-rating').classList.remove('active');
       el.classList.toggle('active', !!el.value);
       document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
       activeFilter = 'all';
-    } else {
-      activeFilter    = type;
+    } else if (type === 'rating') {
+      activeRating    = parseInt(el.value)||0;
+      activeFilter    = 'rating';
       activeAuthor    = '';
       activePublisher = '';
       document.getElementById('filter-author').value = '';
       document.getElementById('filter-publisher').value = '';
       document.getElementById('filter-author').classList.remove('active');
       document.getElementById('filter-publisher').classList.remove('active');
+      el.classList.toggle('active', !!el.value);
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    } else {
+      activeFilter    = type;
+      activeAuthor    = '';
+      activePublisher = '';
+      activeRating    = 0;
+      document.getElementById('filter-author').value = '';
+      document.getElementById('filter-publisher').value = '';
+      document.getElementById('filter-rating').value = '';
+      document.getElementById('filter-author').classList.remove('active');
+      document.getElementById('filter-publisher').classList.remove('active');
+      document.getElementById('filter-rating').classList.remove('active');
       document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
       if (el.classList) el.classList.add('active');
     }
@@ -865,7 +909,7 @@
         if (activeFilter==='donate')  mf = b.donate;
         if (activeFilter==='read')    mf = b.read;
         if (activeFilter==='wishlist')mf = b.wishlist;
-        if (activeFilter==='5stars')  mf = b.rating === 5;
+        if (activeFilter==='rating' && activeRating)  mf = b.rating === activeRating;
       }
       return ms && mf;
     });
@@ -881,7 +925,7 @@
     else if (activeFilter==='donate')  labelText = `${list.length} livro${list.length!==1?'s':''} para doação`;
     else if (activeFilter==='read')    labelText = `${list.length} livro${list.length!==1?'s':''} lidos`;
     else if (activeFilter==='wishlist')labelText = `${list.length} na wishlist`;
-    else if (activeFilter==='5stars')  labelText = `${list.length} livro${list.length!==1?'s':''} com 5 estrelas`;
+    else if (activeFilter==='rating' && activeRating) labelText = `${list.length} livro${list.length!==1?'s':''} com ${'⭐'.repeat(activeRating)}`;
 
     document.getElementById('section-label').textContent = labelText;
 
