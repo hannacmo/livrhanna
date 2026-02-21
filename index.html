@@ -383,8 +383,8 @@
   <div class="filter-row" id="filter-row">
     <button class="filter-chip active" data-filter="all" onclick="setFilter('all',this)">todos</button>
     <button class="filter-chip" data-filter="donate" onclick="setFilter('donate',this)">💚 para doação</button>
-    <button class="filter-chip" data-filter="read" onclick="setFilter('read',this)">✅ lidos</button>
-    <button class="filter-chip" data-filter="wishlist" onclick="setFilter('wishlist',this)">🔵 wishlist</button>
+    <button class="filter-chip admin-only-filter" data-filter="read" onclick="setFilter('read',this)" style="display:none;">✅ lidos</button>
+    <button class="filter-chip admin-only-filter" data-filter="wishlist" onclick="setFilter('wishlist',this)" style="display:none;">🔵 wishlist</button>
     <select class="filter-select" id="filter-rating" onchange="setFilter('rating',this)">
       <option value="">por avaliação...</option>
     </select>
@@ -710,6 +710,7 @@
       document.body.classList.add('admin-unlocked');
       document.getElementById('btn-add-book').style.display = 'inline-block';
       document.getElementById('btn-restricted').style.display = 'none';
+      document.querySelectorAll('.admin-only-filter').forEach(el => el.style.display = 'inline-block');
       render();
     } else {
       document.getElementById('pass-error').textContent = 'senha incorreta, tente novamente.';
@@ -726,6 +727,7 @@
     document.body.classList.remove('admin-unlocked');
     document.getElementById('btn-add-book').style.display = 'none';
     document.getElementById('btn-restricted').style.display = 'inline-block';
+    document.querySelectorAll('.admin-only-filter').forEach(el => el.style.display = 'none');
     render();
     showToast('saiu do modo admin.');
   };
@@ -1011,9 +1013,9 @@
               ${b.genre    ? `<span class="meta-tag">${esc(b.genre)}</span>` : ''}
               ${b.year     ? `<span class="meta-tag">${b.year}</span>` : ''}
               ${pubTag}
-              ${b.read      ? '<span class="meta-tag" style="background:var(--teal-pale);color:var(--teal-dark);">✓ lido</span>'     : ''}
+              ${isAdmin && b.read      ? '<span class="meta-tag" style="background:var(--teal-pale);color:var(--teal-dark);">✓ lido</span>'     : ''}
               ${b.duplicate ? '<span class="meta-tag" style="background:var(--pink-pale);color:var(--pink-dark);">repetido</span>'   : ''}
-              ${b.wishlist  ? '<span class="meta-tag" style="background:var(--blue-pale);color:var(--blue-dark);">wishlist</span>'   : ''}
+              ${isAdmin && b.wishlist  ? '<span class="meta-tag" style="background:var(--blue-pale);color:var(--blue-dark);">wishlist</span>'   : ''}
             </div>
             ${stars ? `<div class="book-rating">${stars}</div>` : ''}
             ${reservedBy}
