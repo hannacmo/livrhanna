@@ -113,6 +113,17 @@
   .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
   .section-label { font-size: .7rem; color: var(--mid); letter-spacing: .1em; }
 
+  .sort-select {
+    padding: 5px 30px 5px 11px; border: 1.5px solid var(--light); border-radius: 20px;
+    background: var(--white); font-family: 'DM Sans', sans-serif;
+    font-size: .75rem; color: var(--mid); cursor: pointer;
+    appearance: none; transition: all .2s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b6b'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+    background-color: var(--white);
+  }
+  .sort-select:focus { outline: none; border-color: var(--teal); }
+
   .btn-add {
     padding: 9px 20px; background: var(--teal); border: none;
     border-radius: 20px; font-family: 'DM Sans', sans-serif;
@@ -425,8 +436,16 @@
 <div class="container">
   <div class="toolbar">
     <div class="section-label" id="section-label">carregando...</div>
-    <button class="btn-add" id="btn-add-book" onclick="openBookModal()" style="display:none;">＋ adicionar livro</button>
-    <button class="btn-restricted" onclick="clickAdd()" id="btn-restricted">🔐 área restrita</button>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <select class="sort-select" id="sort-select" onchange="render()">
+        <option value="added-desc">mais recentes primeiro</option>
+        <option value="added-asc">mais antigos primeiro</option>
+        <option value="alpha-asc">a → z</option>
+        <option value="alpha-desc">z → a</option>
+      </select>
+      <button class="btn-add" id="btn-add-book" onclick="openBookModal()" style="display:none;">＋ adicionar livro</button>
+      <button class="btn-restricted" onclick="clickAdd()" id="btn-restricted">🔐 área restrita</button>
+    </div>
   </div>
   <div id="config-warning-area"></div>
   <div class="books-grid" id="books-grid"></div>
@@ -1000,6 +1019,13 @@
       }
       return ms && mf;
     });
+
+    // sort
+    const sortVal = document.getElementById('sort-select').value;
+    if (sortVal === 'alpha-asc')   list.sort((a,b) => a.title.localeCompare(b.title, 'pt'));
+    if (sortVal === 'alpha-desc')  list.sort((a,b) => b.title.localeCompare(a.title, 'pt'));
+    if (sortVal === 'added-asc')   list.sort((a,b) => (a.added||0) - (b.added||0));
+    if (sortVal === 'added-desc')  list.sort((a,b) => (b.added||0) - (a.added||0));
 
     document.getElementById('stat-total').textContent    = books.length;
     document.getElementById('stat-donate').textContent   = books.filter(b=>b.donate).length;
