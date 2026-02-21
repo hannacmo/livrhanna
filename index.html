@@ -492,6 +492,15 @@
       </div>
       <div class="form-row">
         <div class="form-group">
+          <label>quantidade de unidades</label>
+          <input type="number" id="f-qty" placeholder="1" min="1" max="99" value="1" oninput="handleQtyChange()">
+        </div>
+        <div class="form-group" style="display:flex;align-items:flex-end;">
+          <p style="font-size:.72rem;color:var(--mid);line-height:1.5;padding-bottom:10px;">acima de 1 unidade → marcado automaticamente como <strong>repetido</strong> e <strong>para doação</strong></p>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
           <label>gênero</label>
           <select id="f-genre">
             <option value="">selecionar...</option>
@@ -711,6 +720,16 @@
   }
 
   // ── AUTH ──
+  window.handleQtyChange = () => {
+    const qty = parseInt(document.getElementById('f-qty').value)||1;
+    if (qty > 1) {
+      document.getElementById('f-duplicate').checked = true;
+      document.getElementById('f-donate').checked    = true;
+    } else {
+      document.getElementById('f-duplicate').checked = false;
+    }
+  };
+
   window.clickAdd = () => {
     // already admin — nothing to do (button hidden anyway)
     if (isAdmin) return;
@@ -771,6 +790,7 @@
     document.getElementById('f-genre').value       = b ? (b.genre||'')    : '';
     document.getElementById('f-year').value        = b ? (b.year||'')     : '';
     document.getElementById('f-rating').value      = b ? (b.rating||0)    : 0;
+    document.getElementById('f-qty').value         = b ? (b.qty||1)       : 1;
     document.getElementById('f-notes').value       = b ? (b.notes||'')    : '';
     document.getElementById('f-amazon').value      = b ? (b.amazonUrl||'')  : '';
     document.getElementById('f-donate').checked    = b ? !!b.donate       : true;
@@ -835,12 +855,13 @@
       genre:     document.getElementById('f-genre').value,
       year:      document.getElementById('f-year').value,
       rating:    parseInt(document.getElementById('f-rating').value),
+      qty:       parseInt(document.getElementById('f-qty').value)||1,
       notes:     document.getElementById('f-notes').value.trim(),
       amazonUrl: document.getElementById('f-amazon').value.trim(),
-      donate:    document.getElementById('f-donate').checked,
+      donate:    (parseInt(document.getElementById('f-qty').value)||1) > 1 ? true : document.getElementById('f-donate').checked,
       read:      document.getElementById('f-read').checked,
       wishlist:  document.getElementById('f-wishlist').checked,
-      duplicate: document.getElementById('f-duplicate').checked,
+      duplicate: (parseInt(document.getElementById('f-qty').value)||1) > 1 ? true : document.getElementById('f-duplicate').checked,
       coverUrl,
       added: ex ? ex.added : Date.now()
     };
