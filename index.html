@@ -239,6 +239,17 @@
 
   .book-notes { font-size: .68rem; color: var(--mid); font-style: italic; padding: 0 11px 9px; line-height: 1.4; }
 
+  .btn-amazon {
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    width: 100%; padding: 7px 10px; margin-top: 5px;
+    background: #FF9900; border: none; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 700;
+    color: #111; cursor: pointer; text-decoration: none;
+    transition: background .2s; line-height: 1;
+  }
+  .btn-amazon:hover { background: #e68a00; }
+  .btn-amazon svg { flex-shrink: 0; }
+
   /* ══════════ EMPTY ══════════ */
   .empty-state { text-align: center; padding: 70px 20px; color: var(--mid); }
   .empty-state .icon { font-size: 3.5rem; margin-bottom: 14px; }
@@ -499,6 +510,10 @@
         <textarea id="f-notes" rows="2" placeholder="estado do livro, edição especial..."></textarea>
       </div>
       <div class="form-group">
+        <label>link amazon (opcional)</label>
+        <input type="url" id="f-amazon" placeholder="https://amazon.com.br/...">
+      </div>
+      <div class="form-group">
         <label>marcadores</label>
         <div class="checkbox-group">
           <label class="checkbox-label"><input type="checkbox" id="f-donate"> 💚 para doação</label>
@@ -734,6 +749,7 @@
     document.getElementById('f-year').value        = b ? (b.year||'')     : '';
     document.getElementById('f-rating').value      = b ? (b.rating||0)    : 0;
     document.getElementById('f-notes').value       = b ? (b.notes||'')    : '';
+    document.getElementById('f-amazon').value      = b ? (b.amazonUrl||'')  : '';
     document.getElementById('f-donate').checked    = b ? !!b.donate       : true;
     document.getElementById('f-read').checked      = b ? !!b.read         : false;
     document.getElementById('f-wishlist').checked  = b ? !!b.wishlist     : false;
@@ -797,6 +813,7 @@
       year:      document.getElementById('f-year').value,
       rating:    parseInt(document.getElementById('f-rating').value),
       notes:     document.getElementById('f-notes').value.trim(),
+      amazonUrl: document.getElementById('f-amazon').value.trim(),
       donate:    document.getElementById('f-donate').checked,
       read:      document.getElementById('f-read').checked,
       wishlist:  document.getElementById('f-wishlist').checked,
@@ -970,6 +987,13 @@
       }
 
       const notes = b.notes ? `<div class="book-notes">${esc(b.notes)}</div>` : '';
+      const amazonBtn = b.amazonUrl ? `
+        <div style="padding: 0 11px 10px;">
+          <a class="btn-amazon" href="${esc(b.amazonUrl)}" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#111"><path d="M13.23 10.56C13.23 11.16 13.25 11.65 13.18 12.13 12.95 13.5 11.93 14.34 10.56 14.34 9.65 14.34 9.01 13.73 9.01 12.81 9.01 11.13 10.5 10.79 13.23 10.79V10.56ZM16.67 17.27C16.44 17.47 16.1 17.49 15.85 17.36 14.73 16.41 14.54 15.97 13.92 15.08 12.08 16.96 10.77 17.53 8.42 17.53 5.63 17.53 3.47 15.82 3.47 12.36 3.47 9.67 4.94 7.84 7.08 7.01 8.93 6.27 11.5 6.14 13.23 5.93V5.53C13.23 4.82 13.28 3.98 12.86 3.37 12.5 2.82 11.8 2.6 11.18 2.6 9.99 2.6 8.94 3.22 8.67 4.48 8.62 4.75 8.42 5.02 8.15 5.03L5.03 4.7C4.79 4.64 4.52 4.45 4.59 4.09 5.3.48 8.56-.5 11.5-.5 13 -.5 14.97-.08 16.11 1.01 17.56 2.36 17.43 4.14 17.43 6.06V10.79C17.43 12.13 17.98 12.73 18.5 13.46 18.68 13.72 18.72 14.03 18.49 14.22L16.67 15.78 16.67 17.27Z"/></svg>
+            ver na amazon
+          </a>
+        </div>` : '';
       const pubTag = b.publisher ? `<span class="meta-tag">${esc(b.publisher)}</span>` : '';
 
       return `
@@ -995,6 +1019,7 @@
             ${reservedBy}
           </div>
           ${notes}
+          ${amazonBtn}
           ${footer}
         </div>`;
     }).join('');
