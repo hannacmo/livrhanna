@@ -394,6 +394,9 @@
     <select class="filter-select" id="filter-publisher" onchange="setFilter('publisher',this)">
       <option value="">por editora...</option>
     </select>
+    <select class="filter-select" id="filter-genre" onchange="setFilter('genre',this)">
+      <option value="">por gênero...</option>
+    </select>
   </div>
 
   <div class="hero-stats">
@@ -573,6 +576,7 @@
   let activeAuthor    = '';
   let activePublisher = '';
   let activeRating    = 0;
+  let activeGenre     = '';
 
   const BG = ['#d4efec','#d6e5ef','#fce8e8','#e4d4ef','#d4e8d4','#f0e8d4','#e8d4d4'];
   const EM = {
@@ -673,6 +677,14 @@
     // update active styling
     aSelect.classList.toggle('active', !!aSelect.value);
     pSelect.classList.toggle('active', !!pSelect.value);
+
+    // genre dropdown
+    const genres  = [...new Set(books.map(b=>b.genre).filter(Boolean))].sort();
+    const gSelect = document.getElementById('filter-genre');
+    const gVal    = gSelect.value;
+    gSelect.innerHTML = '<option value="">por gênero...</option>' +
+      genres.map(g => `<option value="${esc(g)}"${g===gVal?' selected':''}>${esc(g)}</option>`).join('');
+    gSelect.classList.toggle('active', !!gSelect.value);
 
     // rating dropdown
     const ratings = [...new Set(books.map(b=>b.rating).filter(r=>r>0))].sort((a,b)=>b-a);
@@ -866,10 +878,13 @@
       activeAuthor    = el.value;
       activePublisher = '';
       activeRating    = 0;
+      activeGenre     = '';
       document.getElementById('filter-publisher').value = '';
-      document.getElementById('filter-rating').value = '';
+      document.getElementById('filter-rating').value    = '';
+      document.getElementById('filter-genre').value     = '';
       document.getElementById('filter-publisher').classList.remove('active');
       document.getElementById('filter-rating').classList.remove('active');
+      document.getElementById('filter-genre').classList.remove('active');
       el.classList.toggle('active', !!el.value);
       // deactivate chips
       document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
@@ -878,22 +893,41 @@
       activePublisher = el.value;
       activeAuthor    = '';
       activeRating    = 0;
-      document.getElementById('filter-author').value = '';
-      document.getElementById('filter-rating').value = '';
+      activeGenre     = '';
+      document.getElementById('filter-author').value    = '';
+      document.getElementById('filter-rating').value    = '';
+      document.getElementById('filter-genre').value     = '';
       document.getElementById('filter-author').classList.remove('active');
       document.getElementById('filter-rating').classList.remove('active');
+      document.getElementById('filter-genre').classList.remove('active');
       el.classList.toggle('active', !!el.value);
       document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
       activeFilter = 'all';
+    } else if (type === 'genre') {
+      activeGenre     = el.value;
+      activeAuthor    = '';
+      activePublisher = '';
+      activeRating    = 0;
+      document.getElementById('filter-author').value    = '';
+      document.getElementById('filter-publisher').value = '';
+      document.getElementById('filter-rating').value    = '';
+      document.getElementById('filter-author').classList.remove('active');
+      document.getElementById('filter-publisher').classList.remove('active');
+      document.getElementById('filter-rating').classList.remove('active');
+      el.classList.toggle('active', !!el.value);
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
     } else if (type === 'rating') {
       activeRating    = parseInt(el.value)||0;
       activeFilter    = 'rating';
       activeAuthor    = '';
       activePublisher = '';
-      document.getElementById('filter-author').value = '';
+      activeGenre     = '';
+      document.getElementById('filter-author').value    = '';
       document.getElementById('filter-publisher').value = '';
+      document.getElementById('filter-genre').value     = '';
       document.getElementById('filter-author').classList.remove('active');
       document.getElementById('filter-publisher').classList.remove('active');
+      document.getElementById('filter-genre').classList.remove('active');
       el.classList.toggle('active', !!el.value);
       document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
     } else {
@@ -901,12 +935,15 @@
       activeAuthor    = '';
       activePublisher = '';
       activeRating    = 0;
-      document.getElementById('filter-author').value = '';
+      activeGenre     = '';
+      document.getElementById('filter-author').value    = '';
       document.getElementById('filter-publisher').value = '';
-      document.getElementById('filter-rating').value = '';
+      document.getElementById('filter-rating').value    = '';
+      document.getElementById('filter-genre').value     = '';
       document.getElementById('filter-author').classList.remove('active');
       document.getElementById('filter-publisher').classList.remove('active');
       document.getElementById('filter-rating').classList.remove('active');
+      document.getElementById('filter-genre').classList.remove('active');
       document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
       if (el.classList) el.classList.add('active');
     }
@@ -922,8 +959,9 @@
                     || (b.author||'').toLowerCase().includes(q)
                     || (b.publisher||'').toLowerCase().includes(q);
       let mf = true;
-      if (activeAuthor)    mf = b.author    === activeAuthor;
+      if (activeAuthor)         mf = b.author    === activeAuthor;
       else if (activePublisher) mf = b.publisher === activePublisher;
+      else if (activeGenre)     mf = b.genre     === activeGenre;
       else {
         if (activeFilter==='donate')  mf = b.donate;
         if (activeFilter==='read')    mf = b.read;
@@ -945,6 +983,7 @@
     else if (activeFilter==='read')    labelText = `${list.length} livro${list.length!==1?'s':''} lidos`;
     else if (activeFilter==='wishlist')labelText = `${list.length} na wishlist`;
     else if (activeFilter==='rating' && activeRating) labelText = `${list.length} livro${list.length!==1?'s':''} com ${'⭐'.repeat(activeRating)}`;
+    else if (activeGenre) labelText = `gênero: ${activeGenre} (${list.length} livro${list.length!==1?'s':''})`;    
 
     document.getElementById('section-label').textContent = labelText;
 
