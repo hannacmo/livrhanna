@@ -239,6 +239,15 @@
 
   .book-notes { font-size: .68rem; color: var(--mid); font-style: italic; padding: 0 11px 9px; line-height: 1.4; }
 
+  .clickable-tag {
+    cursor: pointer; transition: all .15s;
+  }
+  .clickable-tag:hover {
+    background: var(--teal) !important;
+    color: white !important;
+  }
+  .pub-author.clickable-tag:hover { color: var(--teal) !important; background: none !important; text-decoration: underline; }
+
   .btn-amazon {
     display: flex; align-items: center; justify-content: center; gap: 5px;
     width: 100%; padding: 7px 10px; margin-top: 5px;
@@ -1035,7 +1044,6 @@
             ver na amazon
           </a>
         </div>` : '';
-      const pubTag = b.publisher ? `<span class="meta-tag">${esc(b.publisher)}</span>` : '';
 
       return `
         <div class="book-card${res?' is-reserved':''}" style="animation-delay:${Math.min(i*.04,.3)}s">
@@ -1047,11 +1055,11 @@
           </div>
           <div class="book-body">
             <div class="pub-title">${esc(b.title)}</div>
-            <div class="pub-author">${esc(b.author)}</div>
+            <div class="pub-author clickable-tag" onclick="window._filterBy('author','${esc(b.author)}')" title="ver todos de ${esc(b.author)}">${esc(b.author)}</div>
             <div class="book-meta">
-              ${b.genre    ? `<span class="meta-tag">${esc(b.genre)}</span>` : ''}
+              ${b.genre    ? `<span class="meta-tag clickable-tag" onclick="window._filterBy('genre','${esc(b.genre)}')" title="filtrar por ${esc(b.genre)}">${esc(b.genre)}</span>` : ''}
               ${b.year     ? `<span class="meta-tag">${b.year}</span>` : ''}
-              ${pubTag}
+              ${b.publisher ? `<span class="meta-tag clickable-tag" onclick="window._filterBy('publisher','${esc(b.publisher)}')" title="filtrar por ${esc(b.publisher)}">${esc(b.publisher)}</span>` : ''}
               ${isAdmin && b.read      ? '<span class="meta-tag" style="background:var(--teal-pale);color:var(--teal-dark);">✓ lido</span>'     : ''}
               ${b.duplicate ? '<span class="meta-tag" style="background:var(--pink-pale);color:var(--pink-dark);">repetido</span>'   : ''}
               ${isAdmin && b.wishlist  ? '<span class="meta-tag" style="background:var(--blue-pale);color:var(--blue-dark);">wishlist</span>'   : ''}
@@ -1065,6 +1073,21 @@
         </div>`;
     }).join('');
   }
+
+  window._filterBy = (type, value) => {
+    if (!value) return;
+    // update the correct select
+    const selId = type === 'author' ? 'filter-author' : type === 'publisher' ? 'filter-publisher' : 'filter-genre';
+    const sel = document.getElementById(selId);
+    // ensure option exists then set it
+    if (![...sel.options].some(o => o.value === value)) {
+      sel.innerHTML += `<option value="${value}">${value}</option>`;
+    }
+    sel.value = value;
+    window.setFilter(type, sel);
+    // scroll to top of grid smoothly
+    document.getElementById('books-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   window.openBookModal = id => { if (isAdmin) openBookModal(id); };
   window._editBook = id => { if (isAdmin) openBookModal(id); };
